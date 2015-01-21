@@ -1,0 +1,77 @@
+/*
+Lab2_Experiment1
+Karina Kurmanbayeva
+DIGF 2B03 Physical Computing S01
+OCAD University
+Created on Jan 20, 2015
+Based on:
+Example Title, Example Author, URL
+CIRC07 - Button Pressing, oomlout.com, http://www.oomlout.com/oom.php/products/ardx/circ-07%20
+*/
+
+
+const int buttonPin = 2; //button 1
+const int buttonPin2 = 4; //button 2
+const int buttonPin3 = 5; //button 3
+const int ledPin =  12;   //LED pin number 
+
+
+int buttonState = 0; // button 1 unpressed
+int buttonState2 = 0; // button 2 unpressed
+int buttonState3 = 0; //button 3 unpressed
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(ledPin, OUTPUT);  // LED OUTPUT
+
+// Buttons input
+  pinMode(buttonPin, INPUT);     
+  pinMode(buttonPin2, INPUT);
+  pinMode(buttonPin3, INPUT);
+}
+
+void loop(){
+
+  
+  buttonState = digitalRead(buttonPin); //B1
+  buttonState2 = digitalRead(buttonPin2);   //B2
+  buttonState3 = digitalRead(buttonPin3); //B3
+
+
+//If button 1 pressed turn LED off
+  if (buttonState == HIGH) {     
+    
+      digitalWrite(ledPin, LOW);
+  }
+//If button 2 pressed make LED blink slow
+   else if(buttonState2 == HIGH) {
+    
+      digitalWrite(ledPin, HIGH); 
+      delay(1000);              
+      digitalWrite(ledPin, LOW);    
+      delay(1000); 
+      
+   }
+   
+//If button 3 pressed make LED blink fast
+   else if(buttonState3 == HIGH) {
+       
+      digitalWrite(ledPin, HIGH); 
+      delay(100);              
+      digitalWrite(ledPin, LOW);    
+      delay(100); 
+   }
+// if both button 1 and button 2 pressed turn LED off
+   else if(buttonState == HIGH && buttonState2 == HIGH) {
+               
+      digitalWrite(ledPin, LOW);    
+   }
+   else {
+
+// if nothing is pressed turn LED on
+    digitalWrite(ledPin, HIGH); 
+   
+  }
+
+}
