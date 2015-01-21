@@ -1,0 +1,80 @@
+
+/*
+Lab2_Experiment2
+Karina Kurmanbayeva
+DIGF 2B03 Physical Computing S01
+OCAD University
+Created on Jan 20, 2015
+Based on:
+Example Title, Example Author, URL
+CIRC07 - Button Pressing, oomlout.com, http://www.oomlout.com/oom.php/products/ardx/circ-07%20
+*/
+
+const int buttonPin = 2; // Button pin number
+
+const int ledPin1 = 12; //LED 1
+const int ledPin2 = 10; //LED 2
+const int ledPin3 = 9;  //LED3
+
+int buttonPressedCount = 0; //Start counting how many times button was pressed from 0
+
+void setup(){
+  //LEDs
+pinMode(ledPin1, OUTPUT);
+pinMode(ledPin2, OUTPUT);
+pinMode(ledPin3, OUTPUT);
+
+//Button
+pinMode(buttonPin, INPUT);
+
+
+}
+
+void loop(){
+    
+  // state of the button
+   int buttonState = digitalRead(buttonPin);
+    
+    // if button is pressed
+    if (buttonState == HIGH){
+     
+     
+      // if it pressed the first time do this pattern
+      if (buttonPressedCount == 0){
+        
+        digitalWrite(ledPin1, LOW);
+        digitalWrite(ledPin2, HIGH);
+        digitalWrite(ledPin3, LOW);
+        
+      }
+      // if it pressed a second time do this pattern
+      else if (buttonPressedCount == 1){
+        digitalWrite(ledPin1, HIGH);
+        digitalWrite(ledPin2, LOW);
+        digitalWrite(ledPin3, HIGH);
+      }
+      
+      // if it pressed a third time do this pattern
+      else if (buttonPressedCount == 2){
+       digitalWrite(ledPin1, HIGH); 
+       digitalWrite(ledPin2, HIGH);
+       digitalWrite(ledPin3, HIGH);
+      }
+      // Each time button is pressed add 1 to buttonPressedCount. 
+      //Reset it back to 0 when it was pressed mere than 3 times
+        buttonPressedCount++;
+        if (buttonPressedCount > 2){
+          buttonPressedCount = 0;
+       
+       //initial state of the LEDs
+       //set all LEDs to off
+        digitalWrite(ledPin1, LOW);
+        digitalWrite(ledPin2, LOW);
+        digitalWrite(ledPin3, LOW);
+    }
+    
+    
+}
+
+}
+
