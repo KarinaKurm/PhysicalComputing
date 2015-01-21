@@ -43,22 +43,48 @@ void loop(){
       if (buttonPressedCount == 0){
         
         digitalWrite(ledPin1, LOW);
+        
         digitalWrite(ledPin2, HIGH);
+        delay(500);              
+        digitalWrite(ledPin2, LOW);    
+        delay(500);
+        
         digitalWrite(ledPin3, LOW);
         
       }
       // if it pressed a second time do this pattern
       else if (buttonPressedCount == 1){
+       
         digitalWrite(ledPin1, HIGH);
+        delay(100);              
+        digitalWrite(ledPin1, LOW);    
+        delay(100);
+        
         digitalWrite(ledPin2, LOW);
+       
         digitalWrite(ledPin3, HIGH);
+        delay(100);              
+        digitalWrite(ledPin3, LOW);    
+        delay(100);
       }
       
       // if it pressed a third time do this pattern
       else if (buttonPressedCount == 2){
-       digitalWrite(ledPin1, HIGH); 
+       
+        digitalWrite(ledPin1, HIGH);
+       delay(1000);              
+        digitalWrite(ledPin1, LOW);    
+        delay(1000); 
+        
        digitalWrite(ledPin2, HIGH);
+       delay(1000);              
+        digitalWrite(ledPin2, LOW);    
+        delay(1000);
+        
        digitalWrite(ledPin3, HIGH);
+       delay(1000);              
+        digitalWrite(ledPin3, LOW);    
+        delay(1000);
       }
       // Each time button is pressed add 1 to buttonPressedCount. 
       //Reset it back to 0 when it was pressed mere than 3 times
