@@ -51,6 +51,14 @@ void setup() {
     readings[thisReading] = 0;   
 
   // signal the end of the calibration period
+  digitalWrite(13, HIGH);
+  delay(500)
+  digitalWrite(13, LOW);
+  digitalWrite(13, HIGH);
+  delay(500)
+  digitalWrite(13, LOW);
+  digitalWrite(13, HIGH);
+  delay(500)
   digitalWrite(13, LOW);
 }
 
