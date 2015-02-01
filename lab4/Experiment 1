@@ -1,0 +1,74 @@
+//DIGF2B03 Physical Computing
+//Karina Kurmanbayeva
+//Lab2 Experiment3
+//Based off of Simple keyboard using the tone() function example: http://arduino.cc/en/Tutorial/Tone3#.UwthdEJdXfU
+ 
+
+#include "pitches.h.ino"
+
+const int threshold = 950;   
+
+int notes[] = {
+  NOTE_A4 };
+
+int notes2[] = {
+  NOTE_FS4 };
+  
+int notes3[] = {
+  NOTE_AS5 };
+  
+const int sensor1 = A0;
+const int sensor2 = A1;
+const int sensor3 = A2;
+
+
+void setup() {
+    Serial.begin(9600);
+
+}
+
+void loop() {
+   int sensorValue = analogRead(A0);
+  for (int sensor1 = 0; sensor1 < 3; sensor1++) {
+    // get a sensor reading:
+    
+    int thisPitch = map(sensorValue, 400, 1000, 120, 1500);
+    
+     // Serial.println(sensorValue);
+
+    // if the sensor is pressed hard enough:
+    if (sensorValue > threshold) {
+      // play the note corresponding to this sensor:
+      tone(9, notes[sensor1], 10);
+    } 
+  }
+  
+  //sensor2
+  int sensorValue2 = analogRead(A1);
+  for (int sensor2 = 0; sensor2 < 3; sensor2++) {
+    
+    int thisPitch2 = map(sensorValue2, 400, 1000, 120, 1500);
+    
+      //Serial.println(sensorValue2);
+
+    if (sensorValue2 > threshold) {
+    
+      tone(9, notes2[sensor2], 10);
+    } 
+  }
+  
+  //sensor3
+  int sensorValue3 = analogRead(A2);
+  for (int sensor3 = 0; sensor3 < 3; sensor3++) {
+    
+    int thisPitch3 = map(sensorValue3, 400, 1000, 120, 1500);
+    
+      Serial.println(sensorValue3);
+
+ 
+    if (sensorValue3 > threshold) {
+      
+      tone(9, notes3[sensor3], 10);
+    } 
+  }
+}
