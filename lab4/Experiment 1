@@ -4,7 +4,7 @@
 //Based off of Simple keyboard using the tone() function example: http://arduino.cc/en/Tutorial/Tone3#.UwthdEJdXfU
  
 
-#include "pitches.h.ino"
+#include "pitches.h"
 
 const int threshold = 950;   
 
