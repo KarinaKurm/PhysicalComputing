@@ -1,0 +1,51 @@
+//Lab#4, servo
+//Karina Kurmanbayeva
+//DIGF2B03 Physical Computing
+//OCAD University
+//Feb 3, 2015
+
+#include <Servo.h> 
+
+Servo myservo;
+
+
+const int triggerPin = 11; //button 
+const int ledPin =  13;   //LED pin number 
+
+
+void setup() {
+  Serial.begin(9600);
+  
+  myservo.attach(9);
+
+  pinMode(ledPin, OUTPUT);  // LED OUTPUT
+
+  pinMode(triggerPin, INPUT);   
+
+}
+
+void loop(){
+
+int triggerState = digitalRead(triggerPin);  
+
+
+
+//If button 1 pressed turn LED off
+  if (triggerState == HIGH) {     
+    
+    Serial.print("HIGH");
+    myservo.attach(9); 
+    myservo.write(180);
+    digitalWrite(ledPin, HIGH);
+       
+  }
+  else{
+    
+    digitalWrite(ledPin, LOW);
+    myservo.detach();
+  }
+  }
+
+
+
+
