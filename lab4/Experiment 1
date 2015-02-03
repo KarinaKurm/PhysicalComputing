@@ -1,7 +1,11 @@
-//DIGF2B03 Physical Computing
-//Karina Kurmanbayeva
 //Lab2 Experiment3
-//Based off of Simple keyboard using the tone() function example: http://arduino.cc/en/Tutorial/Tone3#.UwthdEJdXfU
+//Karina Kurmanbayeva
+//DIGF2B03 Physical Computing
+//OCAD University
+//Feb 3, 2015
+
+//Based on:
+//Simple keyboard using the tone() function example: http://arduino.cc/en/Tutorial/Tone3#.UwthdEJdXfU
  
 
 #include "pitches.h"
