@@ -1,0 +1,95 @@
+//Midterm. Carousel Game
+//Karina Kurmanbayeva
+//DIGF2B03 Physical Computing
+//OCAD University
+//Feb 11, 2015
+
+#include <Servo.h> 
+ 
+Servo servo360;  // create servo object to control a servo 
+Servo servo180;
+
+ //pins
+const int potpin = 0;  // analog pin used to connect the potentiometer
+int sensorValue;     
+
+const int buttonUP = 11;
+const int ledPinUP = 10;
+ 
+ // button states
+int buttonStateUP = 0; 
+ 
+ // character
+const int characterTouches = 3;
+const int ledPinCh = 4;
+int characterState = 0; 
+ 
+
+ 
+void setup() 
+{ 
+  servo360.attach(9);  
+  servo180.attach(5);
+  
+  pinMode(buttonUP, INPUT);
+  pinMode(ledPinUP, OUTPUT);
+  
+  // character
+    pinMode(characterTouches, INPUT);
+    pinMode(ledPinCh, OUTPUT);
+    
+} 
+ 
+void loop() 
+{ 
+  
+//chatacter movement
+   buttonStateUP = digitalRead(buttonUP);
+
+  if (buttonStateUP == HIGH) {
+        CharacterUp();
+    } 
+    else {
+      CharacterDown();
+    }
+    
+    //gameOver
+    characterState = digitalRead(characterTouches);
+    
+    if (characterState == LOW) {
+      gameOver();  
+    }
+    else{
+    gameRotate();
+    }
+    
+}
+
+void gameOver(){
+       digitalWrite(ledPinCh, HIGH); //turn led on
+       servo360.detach();
+       Serial.println("UP");
+}
+
+void gameRotate(){
+  
+    servo360.attach(9);
+    sensorValue = analogRead(potpin);             
+    sensorValue = map(sensorValue, 0, 1023, 0, 179);     
+    servo360.write(sensorValue);                  
+    Serial.println(sensorValue);
+   
+    digitalWrite(ledPinCh, LOW);
+}
+
+void CharacterUp(){
+      digitalWrite(ledPinUP, LOW); //turn led on
+      servo180.write(0);
+      Serial.println("UP");
+}
+
+void CharacterDown(){
+     servo180.write(180);
+     digitalWrite(ledPinUP, HIGH);
+     Serial.println("DOWN");
+}
