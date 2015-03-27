@@ -1,0 +1,50 @@
+/*
+Lab 6, Servo
+Karina Kurmanbayeva
+DIGF2B03 - PhysicalComputing
+OCAD University
+Created on March 13, 2015
+
+Based on:
+getAcceleration, Light Blue Bean, https://punchthrough.com/bean/the-arduino-reference/getacceleration/
+*/
+
+#include <Servo.h> 
+ 
+Servo myServo;
+
+void setup() {
+  // Optional: Use Bean.setAccelerationRange() to set the sensitivity 
+  // to something other than the default of ±2g.
+   myServo.attach(1);
+  
+}
+
+// the loop routine runs over and over again forever:
+void loop() {
+   // Get the current acceleration with range of ±2g, 
+   // and a conversion of 3.91×10-3 g/unit or 0.03834(m/s^2)/units. 
+   AccelerationReading accel = Bean.getAcceleration();
+
+   // Update LED color
+   uint16_t r = (abs(accel.xAxis)) / 4;
+   myServo.write((abs(accel.xAxis)) / 4);
+   uint16_t g = (abs(accel.yAxis)) / 4;
+   myServo.write((abs(accel.yAxis)) / 4);
+   uint16_t b = (abs(accel.zAxis)) / 4;
+    myServo.write((abs(accel.zAxis)) / 4);
+   
+   Bean.setLed((uint8_t)r,(uint8_t)g,(uint8_t)b);
+   
+   if((abs(accel.xAxis)) / 4){
+    myServo.write(0); 
+   }
+   if((abs(accel.yAxis)) / 4){
+    myServo.write(-90); 
+   }
+    if((abs(accel.zAxis)) / 4){
+    myServo.write(90); 
+   }
+
+  
+}
