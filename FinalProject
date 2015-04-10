@@ -1,0 +1,286 @@
+/*
+Final Project
+Karina Kurmanbayeva, Mudassir Iqbal, Parth Soni
+DIGF 2B03 Physical Computing
+OCAD University
+Created on April 8, 15
+
+Based on:
+Capacitive Sensing Library,Paul Badger,http://playground.arduino.cc/Main/CapacitiveSensor?from=Main.CapSense
+SimpleTimer Library for Arduino, Marcello Romani , http://playground.arduino.cc/Code/SimpleTimer
+*/
+
+#include <SimpleTimer.h>
+#include <rgb_lcd.h> // Grove seeed RGB LCD library
+#include <Wire.h>
+#include <Servo.h>
+#include <CapacitiveSensor.h> //capacitive sensor library
+
+/// Timer variables 
+SimpleTimer timer;
+
+/// Capasitive sensor 
+CapacitiveSensor   cs_4_2 = CapacitiveSensor(4, 2);       // 10 megohm resistor between pins 4 & 2, pin 2 is sensor pin, add wire, foil
+long sensorValue;
+int thresholdValue = 500;
+int sensorStatus;
+int pSensorStatus;
+int touchCount = 0;
+int pTouchCount = 0;
+bool isTouching = false;
+bool alreadyTouched = false;
+
+// servo
+Servo myservo;
+
+
+const int ledPin = 12; //LED 
+
+/// Sound sensor/ mic
+const int pinSound = A0;
+int SoundSensorValue;
+
+int characterState = 0;
+bool imAngry = false;
+
+rgb_lcd lcd;
+
+void setup() {
+  
+  Serial.begin(9600);
+  
+  // timer
+  timer.setInterval(15000, RepeatTask);
+  timer.setTimer(1200, TenTimesTask, 10);
+  
+  myservo.attach(9);
+  pinMode(ledPin, OUTPUT);
+  
+  cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF); ////capasitive sensor callibration
+  
+  /// set asleep mode as a default when program starts
+  DisplayAsleep();
+}
+
+void loop() {
+
+  ///start reading capasitive sensor value
+  long start = millis();
+  sensorValue =  cs_4_2.capacitiveSensor(30);
+
+//  Serial.print(millis() - start);        // check on performance in milliseconds
+//  Serial.println("\t");                    // tab character for debug window spacing
+//  Serial.print(sensorValue);                  // print sensor output 1
+//  Serial.println("\t");
+
+  sensorStatus = sensorValue;
+  
+  CheckIfTouched(); 
+  DisplayAngry(); 
+ 
+}
+
+void CheckIfTouched() {
+      ///if sensor is touched, start counting touches
+      if (sensorStatus > 10 && pSensorStatus <= 10 && isTouching == false) {
+        touchCount = touchCount + 1;
+        isTouching = true;
+        Serial.println("isTouching");
+        }else{
+        isTouching = false; /// sensor is not touched
+        }
+        
+      /// if touched more than 5 times, reset counter back to 0
+      if (touchCount > 5) {
+        touchCount = 0;
+      }
+        /// if not touched yet, put it asleep
+       if (touchCount == 0 && alreadyTouched == true ) {
+        //Serial.println("once");
+        alreadyTouched = true;
+        TouchedZero();
+      }
+      // First Touch
+      if (sensorStatus > 10 && touchCount == 1 && alreadyTouched == false ) {
+        //Serial.println("once");
+        alreadyTouched = true;
+        TouchedOnce();
+      }
+      // Second Touch
+      if (sensorStatus > 10 && touchCount == 2 && alreadyTouched == true ) {
+        alreadyTouched = false;
+        TouchedTwice();
+      }
+      // Third Touch
+      if (sensorStatus > 10 && touchCount == 3 && alreadyTouched == false) {
+        alreadyTouched = true;
+        TouchedThree();
+      }
+      // Fourth touch
+      if (sensorStatus > 10 && touchCount == 4 && alreadyTouched == true) {
+        alreadyTouched = false;
+        TouchedFour();
+      }
+      //Fifth touch
+      if (sensorStatus > 10 && touchCount == 5 && alreadyTouched == false) {
+        alreadyTouched = true;
+        TouchedFive();
+      }
+      /// run timer when it is not sleeping, when it was touched at least once
+      if(isTouching == false && touchCount <= 5 && touchCount > 0){
+        timer.run();
+      }
+
+  pSensorStatus = sensorStatus; /// reset previos sensor value back to its output value
+
+}
+/// Touched Zero times
+void TouchedZero(){
+  DisplayAsleep(); /// asleep
+}
+
+//// Touched Once 
+void TouchedOnce() {
+  //Serial.print("Woke Up");
+  DisplayAwake(); 
+ 
+  digitalWrite(ledPin, HIGH);
+  delay(100);
+  digitalWrite(ledPin, LOW);
+  delay(100);
+
+  myservo.attach(9);
+  myservo.write(100);
+  delay(700);
+
+  myservo.detach();
+}
+
+/// Second Touch
+void TouchedTwice() {
+  //Serial.print("Fully Awake");
+  DispalyHappy();
+  
+  digitalWrite(ledPin, HIGH);
+  delay(50);
+  digitalWrite(ledPin, LOW);
+  delay(50);
+
+  myservo.attach(9);
+  myservo.write(360);
+  delay(1000);
+  myservo.detach();
+}
+
+/// touched three times
+void TouchedThree() {
+  //Serial.print("Irritated");
+  DisplayIrritated();
+  
+  myservo.attach(9);
+  myservo.write(360);
+  delay(250);
+  myservo.detach();
+}
+
+/// Four
+void TouchedFour() {
+  //Serial.print("Angry");
+  imAngry = true;
+      lcd.begin(16, 2);// set up the LCD's number of columns and rows:
+      lcd.setRGB(250, 0, 0); /// set RGB color
+      lcd.setCursor(0, 0);
+      lcd.print("I am ANGRY!");// Print a message to the LCD.
+      lcd.setCursor(0, 1);
+      lcd.print("=-[");
+      delay(500);
+      
+  myservo.attach(9);
+  myservo.write(360);
+  delay(2000);
+  myservo.detach();
+}
+void TouchedFive() {
+  //Serial.print("OFF");
+  myservo.attach(9);
+  myservo.write(360);
+  delay(500);
+  myservo.detach();
+}
+
+/// LCD Speeping Mode
+void DisplayAsleep(){
+  
+    lcd.begin(16, 2);// set up the LCD's number of columns and rows:
+    lcd.setRGB(240, 240, 250); /// set RGB color
+    lcd.print("Zzz...Zzz..zZZ"); // Print a message to the LCD.
+}
+/// LCD Awake mode 
+void DisplayAwake(){
+  lcd.begin(16, 2);
+  lcd.setRGB(227, 208, 98);
+  lcd.print("I am awake");
+}
+/// LCD happy mode
+void DispalyHappy(){
+  lcd.begin(16, 2);
+  lcd.setRGB(38, 255, 0);
+  lcd.print("I am happy!");
+}
+/// LCD irritated mode
+void DisplayIrritated(){
+  lcd.setCursor(0, 0);
+  lcd.begin(16, 2);
+  lcd.setRGB(0, 21, 156);
+  lcd.print("You are annoying!");
+  lcd.setCursor(0, 1);
+  lcd.print("-_-");
+
+}
+// LCD angry mode
+void DisplayAngry(){
+  
+  /// read values from sound sensor
+  int SoundSensorValue = analogRead(pinSound);
+  //Serial.println(SoundSensorValue);
+  
+  delay(100);
+  
+  /// its is angry, cool it down by blowing on the sensor
+  if (SoundSensorValue > thresholdValue)
+  {
+    if(imAngry == true){
+      digitalWrite(ledPin, HIGH);
+       
+      /// display on LCD
+      lcd.begin(16, 2);
+      lcd.setRGB(166, 169, 189);
+      lcd.print("Cooling Down");
+      
+      delay(2000);
+      imAngry = false;
+      
+      /// go back to happy mode when cooled down
+      TouchedTwice();
+      touchCount = 2;
+      
+    }
+  }
+}
+
+///if it is not being touched for more than 15 seconds, fall back asleep
+void RepeatTask() {
+ touchCount = 0;
+ isTouching = false;
+ CheckIfTouched();
+ //Serial.print("repeat"); 
+}
+
+// print timer
+void TenTimesTask() {
+  static int k = 0;
+  k++;
+  Serial.print("called ");
+  Serial.print(k);
+  Serial.println(" / 15 times.");
+}
